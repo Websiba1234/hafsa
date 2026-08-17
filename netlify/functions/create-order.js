@@ -1,9 +1,9 @@
 // netlify/functions/create-order.js
 // Netlify Serverless Function for Creating Razorpay Orders
 
-const https = require('https');
+import https from 'node:https';
 
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,

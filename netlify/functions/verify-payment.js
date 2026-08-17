@@ -1,14 +1,14 @@
 // netlify/functions/verify-payment.js
 // Netlify Serverless Function for Razorpay Payment Signature Verification
 
-const crypto = require('crypto');
+import crypto from 'node:crypto';
 
 /**
  * Netlify Function handler for verifying Razorpay payment signature
  * @param {Object} event - Netlify event object containing HTTP request data
  * @param {Object} context - Netlify context object
  */
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   // 1. Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
