@@ -63,9 +63,9 @@ export default function Navbar({
   return (
     <>
       {/* Top Banner */}
-      <div id="promo-banner" className="bg-brand-100 text-brand-800 text-xs font-medium py-2 px-4 text-center tracking-wider flex items-center justify-center gap-2 relative z-50">
-        <Sparkles className="w-3.5 h-3.5 animate-pulse text-brand-500" />
-        <span>FREE SHIPPING ON ORDERS OVER ₹999 | EASY RETURNS & EXCHANGES</span>
+      <div id="promo-banner" className="bg-brand-100 text-brand-800 text-[11px] sm:text-xs font-medium py-2 px-2 sm:px-4 text-center tracking-wider flex items-center justify-center gap-2 relative z-50">
+        <Sparkles className="w-3.5 h-3.5 animate-pulse text-brand-500 shrink-0" />
+        <span className="truncate sm:overflow-visible">FREE SHIPPING ON ORDERS OVER ₹999 | EASY RETURNS & EXCHANGES</span>
       </div>
 
       {/* Sticky Header */}
@@ -73,11 +73,11 @@ export default function Navbar({
         id="main-navbar"
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-md py-3'
-            : 'bg-white py-5'
+            ? 'bg-white/95 backdrop-blur-md shadow-md py-2.5 sm:py-3'
+            : 'bg-white py-3 sm:py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4">
             {/* Mobile Menu Button */}
             <button
@@ -230,7 +230,7 @@ export default function Navbar({
         </div>
 
         {/* Mobile Search Input (Visible always on mobile) */}
-        <div className="block sm:hidden px-4 pt-2">
+        <div className="block sm:hidden px-2 pt-2">
           <div className="relative">
             <input
               type="text"
@@ -302,7 +302,8 @@ export default function Navbar({
               <div className="border-t border-gray-100 pt-6 mt-6 space-y-4">
                 <div className="text-xs text-gray-500">
                   <p className="font-semibold text-gray-700">Need help?</p>
-                  <p className="mt-1">Call: +91 8210941262</p>
+                  <p className="mt-1 font-medium text-gray-700">Email: support@sibacollection.com</p>
+                  <p>Call: +91 8210941262</p>
                   <p>Juran Chapra, Muzaffarpur</p>
                 </div>
               </div>

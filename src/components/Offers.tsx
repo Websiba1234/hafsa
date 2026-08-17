@@ -47,11 +47,11 @@ export default function Offers({ onPromoClick }: OffersProps) {
   ];
 
   return (
-    <section id="special-promos" className="py-16 bg-brand-50/20 border-y border-brand-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="special-promos" className="py-10 sm:py-16 bg-brand-50/20 border-y border-brand-100">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <span className="text-xs font-semibold text-brand-500 uppercase tracking-[0.25em] inline-flex items-center gap-1.5 mb-2">
             <Percent className="w-4 h-4 text-brand-500 animate-pulse" />
             Exclusive Deals
@@ -65,7 +65,7 @@ export default function Offers({ onPromoClick }: OffersProps) {
         </div>
 
         {/* Promotion Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
           {promos.map((promo, index) => (
             <motion.div
               key={promo.id}

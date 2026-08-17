@@ -183,7 +183,7 @@ export default function ProductCard({
       </div>
 
       {/* Product Details Info Area */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
+      <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
         <div className="cursor-pointer" onClick={onQuickView}>
           {/* Category Tag */}
           <span className="text-[10px] text-brand-500 font-bold uppercase tracking-widest block">
@@ -205,7 +205,7 @@ export default function ProductCard({
         </div>
 
         {/* Pricing & CTA Buttons Layout */}
-        <div className="mt-3.5 pt-3 border-t border-brand-50/50 space-y-2.5">
+        <div className="mt-3 sm:mt-3.5 pt-2.5 sm:pt-3 border-t border-brand-50/50 space-y-2 sm:space-y-2.5">
           <div className="flex items-baseline justify-between">
             <div className="flex items-baseline gap-2">
               <span className="font-serif font-bold text-gray-900 text-sm sm:text-base">
@@ -218,11 +218,11 @@ export default function ProductCard({
           </div>
 
           {/* Dual Action Buttons: Add to Bag (Secondary) & Buy Now (Primary) */}
-          <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-0.5">
             <button
               onClick={handleAddToCartClick}
               disabled={addingToCart || isOutOfStock}
-              className={`flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider py-2 px-2 rounded-xl border transition-all ${
+              className={`w-full flex items-center justify-center gap-1 text-[11px] sm:text-[10px] font-bold uppercase tracking-wider py-2 px-2 rounded-xl border transition-all whitespace-nowrap ${
                 isOutOfStock
                   ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
                   : addingToCart
@@ -230,8 +230,8 @@ export default function ProductCard({
                   : 'bg-white hover:bg-brand-50/80 border-brand-200 text-brand-700 hover:border-brand-300 cursor-pointer'
               }`}
             >
-              <ShoppingBag className="w-3 h-3 shrink-0" />
-              <span className="truncate">
+              <ShoppingBag className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
+              <span className="whitespace-nowrap">
                 {isOutOfStock ? 'Sold Out' : addingToCart ? 'Added!' : 'Add to Bag'}
               </span>
             </button>
@@ -239,14 +239,14 @@ export default function ProductCard({
             <button
               onClick={handleBuyNowClick}
               disabled={isOutOfStock}
-              className={`flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider py-2 px-2 rounded-xl shadow-sm transition-all ${
+              className={`w-full flex items-center justify-center gap-1 text-[11px] sm:text-[10px] font-bold uppercase tracking-wider py-2 px-2 rounded-xl shadow-sm transition-all whitespace-nowrap ${
                 isOutOfStock
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-brand-600 hover:bg-brand-700 text-white cursor-pointer active:scale-95'
               }`}
             >
-              <Zap className="w-3 h-3 fill-current shrink-0" />
-              <span className="truncate">{isOutOfStock ? 'Out of Stock' : 'Buy Now'}</span>
+              <Zap className="w-3.5 h-3.5 sm:w-3 sm:h-3 fill-current shrink-0" />
+              <span className="whitespace-nowrap">{isOutOfStock ? 'Out of Stock' : 'Buy Now'}</span>
             </button>
           </div>
 

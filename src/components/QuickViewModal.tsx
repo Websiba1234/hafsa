@@ -286,14 +286,14 @@ export default function QuickViewModal({
                   <button
                     onClick={handleAddToCart}
                     disabled={addingState || (product.stock !== undefined && product.stock <= 0)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl transition-all whitespace-nowrap ${
                       product.stock !== undefined && product.stock <= 0
                         ? 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed'
                         : 'bg-white border-2 border-brand-600 text-brand-700 hover:bg-brand-50 active:scale-95 cursor-pointer'
                     }`}
                   >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>
+                    <ShoppingBag className="w-4 h-4 shrink-0" />
+                    <span className="whitespace-nowrap">
                       {product.stock !== undefined && product.stock <= 0
                         ? 'Out of Stock'
                         : addingState
@@ -306,14 +306,14 @@ export default function QuickViewModal({
                   <button
                     onClick={handleBuyNow}
                     disabled={product.stock !== undefined && product.stock <= 0}
-                    className={`flex-1 flex items-center justify-center gap-1.5 font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-lg transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-lg transition-all whitespace-nowrap ${
                       product.stock !== undefined && product.stock <= 0
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                         : 'bg-brand-600 hover:bg-brand-700 text-white active:scale-95 cursor-pointer'
                     }`}
                   >
-                    <Zap className="w-4 h-4 fill-current" />
-                    <span>{product.stock !== undefined && product.stock <= 0 ? 'Out of Stock' : 'Buy Now'}</span>
+                    <Zap className="w-4 h-4 fill-current shrink-0" />
+                    <span className="whitespace-nowrap">{product.stock !== undefined && product.stock <= 0 ? 'Out of Stock' : 'Buy Now'}</span>
                   </button>
 
 

@@ -47,8 +47,8 @@ export default function Hero({ onShopClick, onContactClick }: HeroProps) {
         <div className="absolute inset-0 bg-black/25" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 relative z-10 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-center">
           
           {/* Left Text Content Area */}
           <motion.div
@@ -70,10 +70,10 @@ export default function Hero({ onShopClick, onContactClick }: HeroProps) {
             {/* Hero Main Heading */}
             <motion.h1
               variants={itemVariants}
-              className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7.5xl font-black text-gray-900 leading-[1.08] tracking-tight"
+              className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7.5xl font-black text-[#FFFFFF] leading-[1.08] tracking-tight"
             >
               Discover Your <br className="hidden sm:inline" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-brand-400 to-brand-600 italic font-medium pr-1">
+              <span className="text-[#F5F5F5] italic font-medium pr-1">
                 Perfect Style
               </span>
             </motion.h1>

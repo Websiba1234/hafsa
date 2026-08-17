@@ -37,9 +37,9 @@ export default function Features() {
   ];
 
   return (
-    <section id="brand-features" className="py-16 bg-white border-b border-brand-50/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+    <section id="brand-features" className="py-10 sm:py-16 bg-white border-b border-brand-50/50">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-8">
           {featuresList.map((feat, index) => (
             <motion.div
               key={feat.id}

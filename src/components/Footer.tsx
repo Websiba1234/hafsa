@@ -44,11 +44,11 @@ export default function Footer({ onNavigate }: FooterProps) {
   };
 
   return (
-    <footer id="brand-footer" className="bg-[#1c1c1c] text-gray-300 pt-16 border-t-4 border-brand-500">
+    <footer id="brand-footer" className="bg-[#1c1c1c] text-gray-300 pt-12 sm:pt-16 border-t-4 border-brand-500">
       
       {/* Newsletter Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 border-b border-gray-800">
-        <div className="bg-gradient-to-r from-brand-900/40 via-brand-950 to-brand-900/30 p-8 rounded-3xl border border-brand-800/40 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12 border-b border-gray-800">
+        <div className="bg-gradient-to-r from-brand-900/40 via-brand-950 to-brand-900/30 p-6 sm:p-8 rounded-3xl border border-brand-800/40 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left space-y-1.5">
             <h3 className="font-serif text-lg sm:text-xl font-bold text-white tracking-wide">
               Join Our Newsletter
@@ -77,8 +77,8 @@ export default function Footer({ onNavigate }: FooterProps) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12">
           
           {/* Logo and Brand Summary (4 columns) */}
           <div className="lg:col-span-4 space-y-6">
@@ -102,19 +102,6 @@ export default function Footer({ onNavigate }: FooterProps) {
             <div className="space-y-3.5">
               <p className="text-xs font-bold text-white uppercase tracking-wider">Connect with Siba</p>
               <div className="flex gap-3">
-                {/* WhatsApp button */}
-                <a
-                  href="https://wa.me/918210941262"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl bg-gray-800 hover:bg-[#25D366] hover:text-white flex items-center justify-center text-gray-400 transition-all hover:-translate-y-0.5 shadow-sm"
-                  aria-label="WhatsApp Siba Collection"
-                >
-                  <MessageSquare className="w-5 h-5 fill-current text-white/5 opacity-0" style={{ display: 'none' }} />
-                  {/* Custom green WhatsApp icon look inside text */}
-                  <span className="font-bold text-xs uppercase text-[#25D366] hover:text-white">WA</span>
-                </a>
-
                 {/* Instagram button */}
                 <a
                   href="https://instagram.com"
@@ -135,6 +122,17 @@ export default function Footer({ onNavigate }: FooterProps) {
                   aria-label="Facebook Siba Collection"
                 >
                   <Facebook className="w-4 h-4" />
+                </a>
+
+                {/* WhatsApp button positioned in footer */}
+                <a
+                  href="https://wa.me/918210941262"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-xl bg-gray-800 hover:bg-[#25D366] hover:text-white flex items-center justify-center text-gray-400 transition-all hover:-translate-y-0.5 shadow-sm"
+                  aria-label="WhatsApp Siba Collection"
+                >
+                  <span className="font-bold text-xs uppercase text-[#25D366] hover:text-white">WA</span>
                 </a>
               </div>
             </div>
@@ -207,8 +205,21 @@ export default function Footer({ onNavigate }: FooterProps) {
               Contact Details
             </h4>
 
-            {/* Address text blocks */}
+            {/* Primary Email & Address text blocks */}
             <div className="space-y-3.5 text-xs text-gray-400">
+              {/* Primary Email Contact */}
+              <div className="flex items-center gap-3 bg-gray-900/90 border border-brand-500/40 p-3 rounded-xl">
+                <div className="w-8 h-8 rounded-lg bg-brand-500/20 flex items-center justify-center text-brand-400 shrink-0">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[9px] text-brand-400 font-bold uppercase tracking-widest">Primary Contact</span>
+                  <a href="mailto:support@sibacollection.com" className="text-white hover:text-brand-400 font-semibold truncate text-xs">
+                    support@sibacollection.com
+                  </a>
+                </div>
+              </div>
+
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-brand-500 flex-none mt-0.5" />
                 <span>
@@ -222,13 +233,6 @@ export default function Footer({ onNavigate }: FooterProps) {
                 <Phone className="w-4 h-4 text-brand-500 flex-none" />
                 <a href="tel:+918210941262" className="hover:text-brand-400 font-medium">
                   +91 8210941262
-                </a>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-brand-500 flex-none" />
-                <a href="mailto:support@sibacollection.com" className="hover:text-brand-400">
-                  support@sibacollection.com
                 </a>
               </div>
             </div>

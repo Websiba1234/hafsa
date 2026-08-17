@@ -350,11 +350,11 @@ export default function App() {
       />
 
       {/* Primary Products Grid Section */}
-      <main id="shop-product-grid" className="py-16 bg-white border-t border-brand-100/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main id="shop-product-grid" className="py-10 sm:py-16 bg-white border-t border-brand-100/40">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           
           {/* Shop Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-brand-100 pb-6 mb-10 gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-brand-100 pb-6 mb-8 sm:mb-10 gap-6">
             <div>
               <span className="text-xs font-bold text-brand-500 uppercase tracking-widest inline-flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" />
@@ -369,7 +369,7 @@ export default function App() {
             </div>
 
             {/* Quick Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <span className="text-xs text-gray-400 font-bold uppercase tracking-wider mr-2 hidden sm:inline flex items-center gap-1">
                 <Filter className="w-3 h-3 text-brand-500" />
                 Filter by:
@@ -380,7 +380,7 @@ export default function App() {
                   <button
                     key={tab}
                     onClick={() => setActiveCategory(tab)}
-                    className={`text-xs px-3.5 py-2 rounded-full font-semibold transition-all border cursor-pointer ${
+                    className={`text-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full font-semibold transition-all border cursor-pointer ${
                       isActive
                         ? 'bg-brand-600 border-brand-600 text-white shadow-md shadow-brand-100'
                         : 'bg-brand-50/50 border-brand-100 text-gray-600 hover:border-brand-300'
@@ -435,7 +435,7 @@ export default function App() {
           ) : (
 
             /* Product cards grid */
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 lg:gap-8">
               {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -507,21 +507,6 @@ export default function App() {
         promoApplied={checkoutPromoCode}
         onOrderSuccess={handleOrderSuccess}
       />
-
-      {/* Direct WhatsApp Floating Bubble (Amazing luxury helper!) */}
-      <a
-        href="https://wa.me/918210941262?text=Hello%20Siba%20Collection,%20I'm%20interested%20in%20browsing%20your%20premium%20fashion%20collection."
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-30 bg-[#25D366] hover:bg-[#20ba59] text-white p-3.5 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center justify-center cursor-pointer group"
-        aria-label="Chat with Siba on WhatsApp"
-      >
-        <span className="font-bold text-xs uppercase px-1.5 hidden group-hover:inline-block tracking-wide transition-all">
-          Chat With Siba
-        </span>
-        {/* Simple visual indicator for custom green WhatsApp look */}
-        <span className="font-extrabold text-base leading-none">WA</span>
-      </a>
 
     </div>
   );

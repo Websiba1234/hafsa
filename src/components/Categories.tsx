@@ -47,11 +47,11 @@ export default function Categories({ onSelectCategory, activeCategory }: Categor
   ];
 
   return (
-    <section id="shop-by-category" className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="shop-by-category" className="py-10 sm:py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <span className="text-xs font-semibold text-brand-500 uppercase tracking-[0.25em] inline-flex items-center gap-1.5 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
             Shop By Category
@@ -66,7 +66,7 @@ export default function Categories({ onSelectCategory, activeCategory }: Categor
         {/* Categories Layout (Horizontal scroll on mobile, flex wrap on desktop) */}
         <div
           id="category-grid"
-          className="flex items-center gap-6 overflow-x-auto pb-4 scrollbar-thin lg:grid lg:grid-cols-7 lg:overflow-x-visible"
+          className="flex items-center gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-thin lg:grid lg:grid-cols-7 lg:overflow-x-visible"
         >
           {categoriesList.map((cat, index) => {
             const isSelected = activeCategory === cat.name;
