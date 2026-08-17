@@ -1,0 +1,6 @@
+{
+  "name": "Siba Collection",
+  "description": "Premium Women's Fashion Store - Elegant Kurtis, Dresses, Tops, Bottom Wear, Bags & Accessories.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
