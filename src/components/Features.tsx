@@ -37,30 +37,30 @@ export default function Features() {
   ];
 
   return (
-    <section id="brand-features" className="py-10 sm:py-16 bg-white border-b border-brand-50/50">
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-8">
-          {featuresList.map((feat, index) => (
+    <section id="brand-features" className="py-6 bg-white border-b border-brand-50/50">
+      <div className="w-full px-3.5 sm:px-4">
+        <div className="grid grid-cols-2 gap-2.5">
+          {featuresList.slice(0, 4).map((feat, index) => (
             <motion.div
               key={feat.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.08 }}
-              className="group flex flex-col items-center text-center p-6 rounded-2xl bg-brand-50/20 hover:bg-brand-50 hover:shadow-md border border-transparent hover:border-brand-100/30 transition-all duration-300"
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className="flex flex-col items-center text-center p-3 rounded-2xl bg-brand-50/30 border border-brand-100/40"
             >
               {/* Icon frame */}
-              <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110">
+              <div className="w-9 h-9 rounded-full bg-brand-100/80 flex items-center justify-center mb-1.5">
                 {feat.icon}
               </div>
 
               {/* Title */}
-              <h3 className="font-serif text-sm font-bold text-gray-900 tracking-wide uppercase">
+              <h3 className="font-serif text-[11px] font-bold text-gray-900 tracking-wide uppercase">
                 {feat.title}
               </h3>
 
               {/* Description */}
-              <p className="text-xs text-gray-500 mt-2 font-light leading-relaxed max-w-[200px]">
+              <p className="text-[9px] text-gray-500 mt-0.5 font-medium leading-tight">
                 {feat.desc}
               </p>
             </motion.div>

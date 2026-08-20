@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siba Collection — Admin Product Manager</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS Client v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Cinzel', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fdf2f4',
+              100: '#fce7eb',
+              500: '#e84167',
+              600: '#d12952',
+              700: '#b01d41',
+              800: '#921b39',
+              900: '#7a1b33',
+            },
+            gold: {
+              300: '#eedbb8',
+              400: '#dfac6c',
+              500: '#c29251',
+              600: '#a8742a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-neutral-950 text-neutral-100 min-h-screen antialiased flex flex-col">
+
+  <!-- Top Header Navigation -->
+  <header class="sticky top-0 z-40 bg-neutral-900/90 backdrop-blur-md border-b border-neutral-800 px-4 sm:px-8 py-3.5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 group text-neutral-300 hover:text-white transition-colors">
+          <svg class="w-5 h-5 text-gold-400 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span class="text-xs font-semibold uppercase tracking-wider">Back to Store</span>
+        </a>
+        <span class="text-neutral-700">|</span>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h1 class="font-serif text-lg font-bold tracking-wide text-gold-400">
+            SIBA COLLECTION <span class="text-neutral-400 font-sans text-xs font-normal ml-1">Admin Panel</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-3">
+        <button 
+          id="btn-refresh" 
+          onclick="loadProducts()"
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+        >
+          <svg id="refresh-icon" class="w-3.5 h-3.5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span>Refresh</span>
+        </button>
+
+        <a 
+          href="#form-section" 
+          onclick="resetFormToAdd()"
+          class="flex items-center gap-1.5 px-4 py-1.5 bg-gold-500 hover:bg-gold-400 text-neutral-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-md transition-all cursor-pointer"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>Add New Product</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="toast-container" class="max-w-7xl mx-auto px-4 sm:px-8 mt-4 w-full"></div>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6 w-full flex-1 space-y-8">
+
+    <!-- Add / Edit Product Form Card -->
+    <section id="form-section" class="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 sm:p-7 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-neutral-800 pb-4 mb-6">
+        <div>
+          <h2 id="form-title" class="font-serif text-xl font-bold text-gold-400">Add New Product</h2>
+          <p class="text-xs text-neutral-400 mt-0.5">Fill in product details to publish to Supabase <code class="text-gold-300 font-mono">Products</code> table.</p>
+        </div>
+        <button 
+          id="btn-cancel-edit" 
+          onclick="resetFormToAdd()" 
+          class="hidden px-3 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-semibold rounded-lg cursor-pointer"
+        >
+          Cancel Edit
+        </button>
+      </div>
+
+      <form id="product-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+        <input type="hidden" id="edit-id" value="">
+
+        <!-- Product Name & Category -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Product Name <span class="text-red-400">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="field-name" 
+              required 
+              placeholder="e.g. Royal Peach Blossom Chanderi Kurti" 
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Category <span class="text-red-400">*</span>
+            </label>
+            <select 
+              id="field-category" 
+              required
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 focus:outline-none focus:border-gold-400"
+            >
+              <option value="Dupatta">Dupatta</option>
+              <option value="Hijab">Hijab</option>
+              <option value="Naqab">Naqab</option>
+              <option value="Dastarkhan">Dastarkhan</option>
+              <option value="Trouser">Trouser</option>
+              <option value="Nicker / Underwear">Nicker / Underwear</option>
+              <option value="Sando / Ganji">Sando / Ganji</option>
+              <option value="Stoll / Shawl">Stoll / Shawl</option>
+              <option value="Rumal">Rumal</option>
+              <option value="Nighty">Nighty</option>
+              <option value="Kurti">Kurti</option>
+              <option value="Bache Ka Kapra">Bache Ka Kapra</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pricing: Price, Original Price, Discount Percent -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Selling Price (₹) <span class="text-red-400">*</span>
+            </label>
+            <input 
+              type="number" 
+              id="field-price" 
+              required 
+              min="1" 
+              placeholder="1899" 
+              oninput="calculateDiscount()"
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Original Price / MRP (₹)
+            </label>
+            <input 
+              type="number" 
+              id="field-original-price" 
+              min="1" 
+              placeholder="2499" 
+              oninput="calculateDiscount()"
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Discount Percent (%)
+            </label>
+            <input 
+              type="number" 
+              id="field-discount-percent" 
+              min="0" 
+              max="100" 
+              placeholder="24" 
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+        </div>
+
+        <!-- Fabric, Pattern, Color -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Fabric
+            </label>
+            <input 
+              type="text" 
+              id="field-fabric" 
+              placeholder="e.g. Pure Chanderi Silk, Georgette, Linen" 
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Pattern
+            </label>
+            <input 
+              type="text" 
+              id="field-pattern" 
+              placeholder="e.g. Floral Embroidery, Chikankari, Woven" 
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Color
+            </label>
+            <input 
+              type="text" 
+              id="field-color" 
+              placeholder="e.g. Peach Pink, Soft Cream" 
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+        </div>
+
+        <!-- Image Upload to Supabase Storage "products" Bucket -->
+        <div class="p-4 bg-neutral-950 border border-neutral-800 rounded-xl space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold uppercase text-neutral-300">
+              Product Images <span class="text-gold-400">(Uploads directly to "products" bucket)</span>
+            </label>
+            <span id="upload-status" class="text-[11px] text-neutral-400"></span>
+          </div>
+
+          <!-- File Upload input -->
+          <div class="flex flex-col sm:flex-row items-center gap-3">
+            <label class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-gold-400 text-xs font-semibold rounded-xl border border-neutral-700 cursor-pointer transition-colors shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span>Upload Image File</span>
+              <input type="file" id="file-image-upload" accept="image/*" onchange="handleFileUpload(event)" class="hidden" />
+            </label>
+
+            <span class="text-xs text-neutral-500">or paste direct image URL below:</span>
+          </div>
+
+          <!-- Direct URL inputs -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] text-neutral-400 mb-1">Main Image URL <span class="text-red-400">*</span></label>
+              <input 
+                type="url" 
+                id="field-image" 
+                required 
+                placeholder="https://..." 
+                oninput="updateImagePreview()"
+                class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] text-neutral-400 mb-1">Additional Image URLs (Comma separated)</label>
+              <input 
+                type="text" 
+                id="field-images" 
+                placeholder="https://..., https://..." 
+                class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-gold-400"
+              />
+            </div>
+          </div>
+
+          <!-- Image Preview Thumbnail -->
+          <div id="preview-container" class="hidden items-center gap-3 pt-2">
+            <img id="image-preview" src="" alt="Preview" class="w-14 h-16 object-cover rounded-lg border border-neutral-700 bg-neutral-900" />
+            <div class="text-xs text-neutral-400">
+              <span class="text-emerald-400 font-semibold">Image Ready</span>
+              <p class="text-[10px] text-neutral-500" id="preview-url-text"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stock, Rating, Badges (is_new, is_trending) -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Stock Quantity <span class="text-red-400">*</span>
+            </label>
+            <input 
+              type="number" 
+              id="field-stock" 
+              required 
+              min="0" 
+              value="10" 
+              placeholder="10" 
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1.5">
+              Rating (1 - 5)
+            </label>
+            <input 
+              type="number" 
+              id="field-rating" 
+              min="1" 
+              max="5" 
+              step="0.1" 
+              value="4.8" 
+              placeholder="4.8" 
+              class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-neutral-100 focus:outline-none focus:border-gold-400"
+            />
+          </div>
+
+          <div class="pt-4 flex items-center">
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input 
+                type="checkbox" 
+                id="field-is-new" 
+                checked 
+                class="w-4 h-4 rounded text-gold-500 focus:ring-gold-500 bg-neutral-950 border-neutral-700"
+              />
+              <span class="text-xs font-semibold text-neutral-300">Is New Arrival (is_new)</span>
+            </label>
+          </div>
+
+          <div class="pt-4 flex items-center">
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input 
+                type="checkbox" 
+                id="field-is-trending" 
+                class="w-4 h-4 rounded text-gold-500 focus:ring-gold-500 bg-neutral-950 border-neutral-700"
+              />
+              <span class="text-xs font-semibold text-neutral-300">Is Trending (is_trending)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-neutral-800">
+          <button 
+            type="button" 
+            onclick="resetFormToAdd()" 
+            class="px-5 py-2.5 rounded-xl border border-neutral-800 hover:bg-neutral-800 text-neutral-300 text-xs font-medium cursor-pointer transition-colors"
+          >
+            Clear Form
+          </button>
+          <button 
+            type="submit" 
+            id="btn-submit"
+            class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-neutral-950 font-bold text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer"
+          >
+            <span id="submit-btn-text">Save Product to Database</span>
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- Product Catalog List Section -->
+    <section class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="font-serif text-lg font-bold text-neutral-200">Supabase Products Table</h3>
+          <p class="text-xs text-neutral-400">Live products retrieved directly from your Supabase <code class="text-gold-400 font-mono">Products</code> table.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="w-full sm:w-72 relative">
+          <input 
+            type="text" 
+            id="table-search" 
+            oninput="renderProductsTable()" 
+            placeholder="Search by name, category, fabric..." 
+            class="w-full bg-neutral-900 border border-neutral-800 rounded-xl pl-9 pr-3 py-2 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-gold-400"
+          />
+          <svg class="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-xl">
+        <div id="table-loading" class="py-16 text-center space-y-3">
+          <div class="w-8 h-8 border-3 border-gold-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p class="text-xs text-neutral-400">Loading products from Supabase...</p>
+        </div>
+
+        <div id="table-container" class="overflow-x-auto hidden">
+          <table class="w-full text-left text-xs text-neutral-300">
+            <thead class="bg-neutral-950 border-b border-neutral-800 text-neutral-400 uppercase tracking-wider font-semibold">
+              <tr>
+                <th class="px-4 py-3.5">Product</th>
+                <th class="px-4 py-3.5">Category</th>
+                <th class="px-4 py-3.5">Fabric & Color</th>
+                <th class="px-4 py-3.5">Price / MRP</th>
+                <th class="px-4 py-3.5">Stock</th>
+                <th class="px-4 py-3.5">Tags</th>
+                <th class="px-4 py-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody" class="divide-y divide-neutral-800/60">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="table-empty" class="hidden py-16 text-center space-y-2 px-4">
+          <p class="text-sm font-serif text-neutral-300">No products found in "Products" table</p>
+          <p class="text-xs text-neutral-500">Use the form above to add your first product.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-neutral-900 border-t border-neutral-800 py-4 px-4 text-center text-xs text-neutral-500">
+    Siba Collection Admin &bull; Connected to Supabase <code class="text-neutral-400 font-mono">vkguvrnymuoppisafttw.supabase.co</code>
+  </footer>
+
+  <!-- Script Logic -->
+  <script>
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://vkguvrnymuoppisafttw.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_a-FMI4wwGqFB5r4ZUgTT-A_dDRM6NI-';
+    
+    // Initialize Supabase Client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let allProducts = [];
+    let isUploading = false;
+
+    // Toast Notification helper
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const isSuccess = type === 'success';
+      const bgColor = isSuccess ? 'bg-emerald-950/80 border-emerald-800 text-emerald-200' : 'bg-red-950/80 border-red-800 text-red-200';
+      
+      const toast = document.createElement('div');
+      toast.className = `p-4 rounded-xl border ${bgColor} text-xs flex items-center justify-between gap-3 shadow-lg mb-3 transition-all`;
+      toast.innerHTML = `
+        <div class="flex items-center gap-2">
+          <span>${message}</span>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-neutral-400 hover:text-white font-bold">&times;</button>
+      `;
+      
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 5000);
+    }
+
+    // Auto calculate discount percentage
+    function calculateDiscount() {
+      const price = parseFloat(document.getElementById('field-price').value) || 0;
+      const originalPrice = parseFloat(document.getElementById('field-original-price').value) || 0;
+      
+      if (originalPrice > price && price > 0) {
+        const pct = Math.round(((originalPrice - price) / originalPrice) * 100);
+        document.getElementById('field-discount-percent').value = pct;
+      }
+    }
+
+    // Update image preview thumbnail
+    function updateImagePreview() {
+      const url = document.getElementById('field-image').value.trim();
+      const container = document.getElementById('preview-container');
+      const img = document.getElementById('image-preview');
+      const urlText = document.getElementById('preview-url-text');
+
+      if (url) {
+        img.src = url;
+        urlText.textContent = url;
+        container.classList.remove('hidden');
+        container.classList.add('flex');
+      } else {
+        container.classList.add('hidden');
+        container.classList.remove('flex');
+      }
+    }
+
+    // Handle Image file upload to Supabase "products" bucket
+    async function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('upload-status');
+      statusEl.textContent = 'Uploading to "products" storage bucket...';
+      statusEl.className = 'text-[11px] text-gold-400 animate-pulse';
+
+      try {
+        const fileExt = file.name.split('.').pop() || 'jpg';
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        // Upload to bucket 'products'
+        const { data, error } = await supabase.storage
+          .from('products')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (error) {
+          console.error('Storage upload error:', error);
+          statusEl.textContent = `Upload failed: ${error.message}`;
+          statusEl.className = 'text-[11px] text-red-400';
+          showToast(`Image upload failed: ${error.message}`, 'error');
+          return;
+        }
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+          .from('products')
+          .getPublicUrl(filePath);
+
+        const publicUrl = urlData.publicUrl;
+        document.getElementById('field-image').value = publicUrl;
+        updateImagePreview();
+
+        statusEl.textContent = 'Uploaded successfully!';
+        statusEl.className = 'text-[11px] text-emerald-400 font-semibold';
+        showToast('Image uploaded to storage successfully!', 'success');
+      } catch (err) {
+        console.error('Error during upload:', err);
+        statusEl.textContent = 'Upload error';
+        statusEl.className = 'text-[11px] text-red-400';
+        showToast(err.message || 'Image upload error', 'error');
+      }
+    }
+
+    // Load products from "Products" table
+    async function loadProducts() {
+      const loadingEl = document.getElementById('table-loading');
+      const tableContainer = document.getElementById('table-container');
+      const tableEmpty = document.getElementById('table-empty');
+      const refreshIcon = document.getElementById('refresh-icon');
+
+      loadingEl.classList.remove('hidden');
+      tableContainer.classList.add('hidden');
+      tableEmpty.classList.add('hidden');
+      refreshIcon.classList.add('animate-spin');
+
+      try {
+        const { data, error } = await supabase
+          .from('Products')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching Products:', error);
+          showToast(`Failed to load products: ${error.message}`, 'error');
+          allProducts = [];
+        } else {
+          allProducts = data || [];
+        }
+
+        renderProductsTable();
+      } catch (err) {
+        console.error('Load products error:', err);
+        showToast(err.message || 'Error connecting to Supabase', 'error');
+      } finally {
+        loadingEl.classList.add('hidden');
+        refreshIcon.classList.remove('animate-spin');
+      }
+    }
+
+    // Render table rows with search filter
+    function renderProductsTable() {
+      const tbody = document.getElementById('products-tbody');
+      const tableContainer = document.getElementById('table-container');
+      const tableEmpty = document.getElementById('table-empty');
+      const searchTerm = (document.getElementById('table-search').value || '').toLowerCase();
+
+      tbody.innerHTML = '';
+
+      const filtered = allProducts.filter(p => {
+        const name = (p.name || p.Name || '').toLowerCase();
+        const category = (p.category || '').toLowerCase();
+        const fabric = (p.fabric || '').toLowerCase();
+        const color = (p.color || '').toLowerCase();
+        return name.includes(searchTerm) || category.includes(searchTerm) || fabric.includes(searchTerm) || color.includes(searchTerm);
+      });
+
+      if (filtered.length === 0) {
+        tableContainer.classList.add('hidden');
+        tableEmpty.classList.remove('hidden');
+        return;
+      }
+
+      tableEmpty.classList.add('hidden');
+      tableContainer.classList.remove('hidden');
+
+      filtered.forEach(p => {
+        const name = p.name || p.Name || 'Untitled';
+        const price = Number(p.price || p.Price || 0);
+        const originalPrice = Number(p.original_price || p.originalPrice || price);
+        const discountPct = Number(p.discount_percent || 0);
+        const category = p.category || 'Dupatta';
+        const fabric = p.fabric || '';
+        const color = p.color || '';
+        const image = p.image || (Array.isArray(p.images) && p.images[0]) || p.Image_URL || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
+        const stock = p.stock !== undefined ? Number(p.stock) : 10;
+        const rating = p.rating || 4.8;
+        const isNew = Boolean(p.is_new ?? p.isNew);
+        const isTrending = Boolean(p.is_trending ?? p.isTrending);
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-neutral-900/60 transition-colors';
+        tr.innerHTML = `
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-3">
+              <img src="${image}" alt="${name}" class="w-10 h-12 object-cover rounded-lg bg-neutral-800 border border-neutral-700/60 shrink-0" onerror="this.src='https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80'" />
+              <div>
+                <p class="font-semibold text-neutral-100 line-clamp-1">${name}</p>
+                <p class="text-[10px] text-neutral-500 font-mono">ID: ${p.id}</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-3 text-neutral-300 font-medium">${category}</td>
+          <td class="px-4 py-3 text-neutral-400">
+            <div>${fabric || '—'}</div>
+            <div class="text-[10px] text-neutral-500">${color || ''}</div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="font-bold text-gold-400">₹${price.toLocaleString('en-IN')}</div>
+            ${originalPrice > price ? `<div class="text-[10px] text-neutral-500 line-through">₹${originalPrice.toLocaleString('en-IN')}</div>` : ''}
+            ${discountPct > 0 ? `<span class="text-[9px] font-bold text-red-400 bg-red-950/80 border border-red-800/60 px-1.5 py-0.5 rounded">${discountPct}% OFF</span>` : ''}
+          </td>
+          <td class="px-4 py-3">
+            <span class="font-semibold ${stock === 0 ? 'text-red-400' : stock < 5 ? 'text-amber-400' : 'text-emerald-400'}">
+              ${stock} in stock
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-wrap gap-1">
+              ${isNew ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-brand-950 text-brand-400 border border-brand-800">NEW</span>' : ''}
+              ${isTrending ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-950 text-amber-400 border border-amber-800">TRENDING</span>' : ''}
+              ${!isNew && !isTrending ? '<span class="text-[10px] text-neutral-500">—</span>' : ''}
+            </div>
+          </td>
+          <td class="px-4 py-3 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <button 
+                onclick="editProduct(${JSON.stringify(p).replace(/"/g, '&quot;')})" 
+                class="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-gold-400 transition-colors cursor-pointer"
+                title="Edit Product"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button 
+                onclick="deleteProduct('${p.id}', '${name.replace(/'/g, "\\'")}')" 
+                class="p-1.5 rounded-lg bg-neutral-800 hover:bg-red-950 text-red-400 transition-colors cursor-pointer"
+                title="Delete Product"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Populate form to edit product
+    function editProduct(product) {
+      document.getElementById('edit-id').value = product.id;
+      document.getElementById('field-name').value = product.name || product.Name || '';
+      document.getElementById('field-category').value = product.category || 'Dupatta';
+      document.getElementById('field-price').value = product.price || product.Price || '';
+      document.getElementById('field-original-price').value = product.original_price || product.originalPrice || '';
+      document.getElementById('field-discount-percent').value = product.discount_percent || '';
+      document.getElementById('field-fabric').value = product.fabric || '';
+      document.getElementById('field-pattern').value = product.pattern || '';
+      document.getElementById('field-color').value = product.color || '';
+      document.getElementById('field-image').value = product.image || (Array.isArray(product.images) && product.images[0]) || product.Image_URL || '';
+      document.getElementById('field-images').value = Array.isArray(product.images) ? product.images.join(', ') : (product.images || '');
+      document.getElementById('field-stock').value = product.stock !== undefined ? product.stock : 10;
+      document.getElementById('field-rating').value = product.rating || 4.8;
+      document.getElementById('field-is-new').checked = Boolean(product.is_new ?? product.isNew);
+      document.getElementById('field-is-trending').checked = Boolean(product.is_trending ?? product.isTrending);
+
+      updateImagePreview();
+
+      document.getElementById('form-title').textContent = `Edit Product: ${product.name || product.Name}`;
+      document.getElementById('submit-btn-text').textContent = 'Update Product in Database';
+      document.getElementById('btn-cancel-edit').classList.remove('hidden');
+
+      // Scroll to form
+      document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Reset form to Add mode
+    function resetFormToAdd() {
+      document.getElementById('edit-id').value = '';
+      document.getElementById('product-form').reset();
+      document.getElementById('field-stock').value = 10;
+      document.getElementById('field-rating').value = 4.8;
+      document.getElementById('field-is-new').checked = true;
+      document.getElementById('field-is-trending').checked = false;
+      document.getElementById('form-title').textContent = 'Add New Product';
+      document.getElementById('submit-btn-text').textContent = 'Save Product to Database';
+      document.getElementById('btn-cancel-edit').classList.add('hidden');
+      document.getElementById('preview-container').classList.add('hidden');
+      document.getElementById('upload-status').textContent = '';
+    }
+
+    // Handle Form Submit (Insert or Update)
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const editId = document.getElementById('edit-id').value;
+      const name = document.getElementById('field-name').value.trim();
+      const category = document.getElementById('field-category').value;
+      const price = parseFloat(document.getElementById('field-price').value) || 0;
+      const originalPriceInput = document.getElementById('field-original-price').value;
+      const originalPrice = originalPriceInput ? parseFloat(originalPriceInput) : price;
+      
+      const discountInput = document.getElementById('field-discount-percent').value;
+      let discountPercent = discountInput ? parseInt(discountInput) : 0;
+      if (!discountPercent && originalPrice > price && originalPrice > 0) {
+        discountPercent = Math.round(((originalPrice - price) / originalPrice) * 100);
+      }
+
+      const fabric = document.getElementById('field-fabric').value.trim();
+      const pattern = document.getElementById('field-pattern').value.trim();
+      const color = document.getElementById('field-color').value.trim();
+      const image = document.getElementById('field-image').value.trim();
+      
+      const additionalImagesStr = document.getElementById('field-images').value.trim();
+      let imagesArray = [];
+      if (additionalImagesStr) {
+        imagesArray = additionalImagesStr.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      if (imagesArray.length === 0 && image) {
+        imagesArray = [image];
+      }
+
+      const stock = parseInt(document.getElementById('field-stock').value) || 0;
+      const rating = parseFloat(document.getElementById('field-rating').value) || 4.8;
+      const isNew = document.getElementById('field-is-new').checked;
+      const isTrending = document.getElementById('field-is-trending').checked;
+
+      const payload = {
+        name,
+        price,
+        original_price: originalPrice,
+        discount_percent: discountPercent,
+        category,
+        color,
+        fabric,
+        pattern,
+        image,
+        images: imagesArray,
+        stock,
+        rating,
+        is_new: isNew,
+        is_trending: isTrending
+      };
+
+      const btnSubmit = document.getElementById('btn-submit');
+      btnSubmit.disabled = true;
+      btnSubmit.classList.add('opacity-50');
+
+      try {
+        if (editId) {
+          // Update in Products table
+          const { error } = await supabase
+            .from('Products')
+            .update(payload)
+            .eq('id', editId);
+
+          if (error) throw error;
+          showToast(`Product "${name}" updated successfully!`, 'success');
+        } else {
+          // Insert into Products table
+          const { error } = await supabase
+            .from('Products')
+            .insert([payload]);
+
+          if (error) throw error;
+          showToast(`Product "${name}" added to Supabase Products table!`, 'success');
+        }
+
+        resetFormToAdd();
+        await loadProducts();
+      } catch (err) {
+        console.error('Save error:', err);
+        showToast(`Operation failed: ${err.message}`, 'error');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.classList.remove('opacity-50');
+      }
+    }
+
+    // Delete product from "Products" table
+    async function deleteProduct(id, name) {
+      if (!confirm(`Are you sure you want to delete "${name}" from Products table? This action cannot be undone.`)) {
+        return;
+      }
+
+      try {
+        const { error } = await supabase
+          .from('Products')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        showToast(`Product "${name}" deleted successfully.`, 'success');
+        await loadProducts();
+      } catch (err) {
+        console.error('Delete error:', err);
+        showToast(`Failed to delete: ${err.message}`, 'error');
+      }
+    }
+
+    // Initial load
+    window.addEventListener('DOMContentLoaded', loadProducts);
+  </script>
+</body>
+</html>

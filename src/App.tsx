@@ -17,8 +17,8 @@ import { Heart, Sparkles, Filter, ChevronRight, MessageCircle, AlertCircle, Refr
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
-  // Store products from Supabase
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  // Store products from Supabase (100% dynamic)
+  const [products, setProducts] = useState<Product[]>([]);
   const [isProductsLoading, setIsProductsLoading] = useState<boolean>(true);
   const [productsFetchError, setProductsFetchError] = useState<string | null>(null);
 
@@ -49,19 +49,17 @@ export default function App() {
   const [checkoutPromoCode, setCheckoutPromoCode] = useState('');
   const [checkoutItems, setCheckoutItems] = useState<CartItem[]>([]);
 
-  // Function to load visitor products from Supabase
+  // Function to load visitor products dynamically from Supabase Products table
   const loadVisitorProducts = async () => {
     setIsProductsLoading(true);
     setProductsFetchError(null);
     const res = await fetchVisitorProducts();
-    if (res.error && res.error !== 'SUPABASE_NOT_CONFIGURED') {
+    if (res.error) {
       console.error('Failed to fetch visitor products from Supabase:', res.error);
       setProductsFetchError(`Could not load live products from Supabase (${res.error}).`);
-    } else if (res.products && res.products.length > 0) {
-      setProducts(res.products);
+      setProducts([]);
     } else {
-      // If table is empty or Supabase isn't configured yet, fallback to default mock products
-      setProducts(PRODUCTS);
+      setProducts(res.products || []);
     }
     setIsProductsLoading(false);
   };
@@ -148,14 +146,18 @@ export default function App() {
       const element = document.getElementById('shop-product-grid');
       element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveCategory('All');
-    } else if (section === 'clothing') {
+    } else if (section === 'dupatta') {
       const element = document.getElementById('shop-product-grid');
       element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveCategory('Kurtis');
-    } else if (section === 'accessories') {
+      setActiveCategory('Dupatta');
+    } else if (section === 'hijab-naqab') {
       const element = document.getElementById('shop-product-grid');
       element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveCategory('Accessories');
+      setActiveCategory('Hijab');
+    } else if (section === 'kids-wear') {
+      const element = document.getElementById('shop-product-grid');
+      element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveCategory('Bache Ka Kapra');
     } else if (section === 'new-arrivals') {
       const element = document.getElementById('shop-product-grid');
       element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -309,205 +311,226 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-50/15 text-gray-900 font-sans flex flex-col justify-between">
-      
-      {/* Dynamic Header & Promo Area */}
+    <div className="min-h-screen bg-neutral-900 flex justify-center items-start">
+      <div className="w-full max-w-[480px] min-h-screen bg-white text-gray-900 font-sans flex flex-col justify-between shadow-2xl relative overflow-x-hidden border-x border-neutral-800/40">
+        
+        {/* Dynamic Header & Promo Area */}
+        <Navbar
+          cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+          wishlistCount={wishlistItems.length}
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenWishlist={() => setIsWishlistOpen(true)}
+          onSearchChange={setSearchQuery}
+          searchQuery={searchQuery}
+          onNavigate={handleNavigate}
+          activeSection={activeSection}
+        />
 
-      <Navbar
-        cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-        wishlistCount={wishlistItems.length}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-        onSearchChange={setSearchQuery}
-        searchQuery={searchQuery}
-        onNavigate={handleNavigate}
-        activeSection={activeSection}
-      />
+        {/* Hero Banner Section (Completely model-free, human-free abstract luxury fabric bg) */}
+        <Hero
+          onShopClick={() => handleNavigate('shop')}
+          onContactClick={() => handleNavigate('contact-us')}
+        />
 
-      {/* Hero Banner Section (Completely model-free, human-free abstract luxury fabric bg) */}
-      <Hero
-        onShopClick={() => handleNavigate('shop')}
-        onContactClick={() => handleNavigate('contact-us')}
-      />
+        {/* Categories Panel Section (4 circle categories per row, 3 rows) */}
+        <Categories
+          activeCategory={activeCategory}
+          onSelectCategory={(cat) => {
+            setActiveCategory(cat);
+            const element = document.getElementById('shop-product-grid');
+            element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
+        />
 
-      {/* Categories Panel Section */}
-      <Categories
-        activeCategory={activeCategory}
-        onSelectCategory={(cat) => {
-          setActiveCategory(cat);
-          const element = document.getElementById('shop-product-grid');
-          element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }}
-      />
+        {/* Offers Section (3 cards horizontal scroll) */}
+        <Offers
+          onPromoClick={(categoryFilter) => {
+            setActiveCategory(categoryFilter);
+            const element = document.getElementById('shop-product-grid');
+            element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
+        />
 
-      {/* Offers Section */}
-      <Offers
-        onPromoClick={(categoryFilter) => {
-          setActiveCategory(categoryFilter);
-          const element = document.getElementById('shop-product-grid');
-          element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }}
-      />
-
-      {/* Primary Products Grid Section */}
-      <main id="shop-product-grid" className="py-10 sm:py-16 bg-white border-t border-brand-100/40">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-          
-          {/* Shop Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-brand-100 pb-6 mb-8 sm:mb-10 gap-6">
-            <div>
-              <span className="text-xs font-bold text-brand-500 uppercase tracking-widest inline-flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" />
+        {/* Primary Products Grid Section */}
+        <main id="shop-product-grid" className="py-6 bg-white border-t border-brand-100/40">
+          <div className="w-full px-3.5 sm:px-4">
+            
+            {/* Shop Header */}
+            <div className="border-b border-brand-100 pb-3 mb-4">
+              <span className="text-[10px] font-bold text-brand-600 uppercase tracking-widest inline-flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-brand-500" />
                 SIBA COLLECTION EXCLUSIVE
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mt-1">
+              <h2 className="font-serif text-xl font-black text-gray-900 tracking-tight mt-0.5 leading-tight">
                 {activeCategory === 'All' ? 'Latest Fashion Collection' : `${activeCategory}`}
               </h2>
-              <p className="text-xs text-gray-500 mt-2 font-light">
-                Showing {filteredProducts.length} premium model-free product displays.
+              <p className="text-[11px] text-gray-500 mt-0.5 font-normal">
+                Showing {filteredProducts.length} items.
               </p>
-            </div>
 
-            {/* Quick Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="text-xs text-gray-400 font-bold uppercase tracking-wider mr-2 hidden sm:inline flex items-center gap-1">
-                <Filter className="w-3 h-3 text-brand-500" />
-                Filter by:
-              </span>
-              {['All', 'Kurtis', 'Dresses', 'Tops', 'Bottom Wear', 'Bags', 'Jewellery', 'Accessories'].map((tab) => {
-                const isActive = activeCategory === tab;
-                return (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveCategory(tab)}
-                    className={`text-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full font-semibold transition-all border cursor-pointer ${
-                      isActive
-                        ? 'bg-brand-600 border-brand-600 text-white shadow-md shadow-brand-100'
-                        : 'bg-brand-50/50 border-brand-100 text-gray-600 hover:border-brand-300'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Error Banner if Supabase fetch failed */}
-          {productsFetchError && (
-            <div className="mb-8 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                <span>{productsFetchError}</span>
+              {/* Quick Filter Tabs (Wrapping small pill buttons) */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-3">
+                {[
+                  'All',
+                  'Dupatta',
+                  'Hijab',
+                  'Naqab',
+                  'Dastarkhan',
+                  'Trouser',
+                  'Nicker / Underwear',
+                  'Sando / Ganji',
+                  'Stoll / Shawl',
+                  'Rumal',
+                  'Nighty',
+                  'Kurti',
+                  'Bache Ka Kapra'
+                ].map((tab) => {
+                  const isActive = activeCategory === tab;
+                  return (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveCategory(tab)}
+                      className={`text-[11px] px-3 py-1 rounded-full font-bold transition-all border whitespace-nowrap cursor-pointer shrink-0 ${
+                        isActive
+                          ? 'bg-brand-600 border-brand-600 text-white shadow-xs'
+                          : 'bg-brand-50/70 border-brand-100 text-gray-700 hover:border-brand-300'
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  );
+                })}
               </div>
-              <button
-                onClick={loadVisitorProducts}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs cursor-pointer shrink-0"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Retry</span>
-              </button>
             </div>
-          )}
 
-          {/* Grid Layout or Loading Spinner */}
-          {isProductsLoading ? (
-            <div className="py-24 text-center space-y-3">
-              <div className="w-10 h-10 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-xs font-medium text-brand-700">Loading products from Supabase...</p>
-            </div>
-          ) : filteredProducts.length === 0 ? (
-            /* Empty Grid Results */
-            <div className="text-center py-20 bg-brand-50/20 rounded-3xl border border-dashed border-brand-200">
-              <p className="text-base font-serif italic text-gray-500">
-                No products found matching "{searchQuery}".
-              </p>
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setActiveCategory('All');
-                }}
-                className="mt-4 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-full shadow cursor-pointer"
-              >
-                Clear Filters
-              </button>
-            </div>
-          ) : (
+            {/* Error Banner if Supabase fetch failed */}
+            {productsFetchError && (
+              <div className="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5">
+                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span className="text-[11px]">{productsFetchError}</span>
+                </div>
+                <button
+                  onClick={loadVisitorProducts}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] cursor-pointer shrink-0"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Retry</span>
+                </button>
+              </div>
+            )}
 
-            /* Product cards grid */
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 lg:gap-8">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  isWishlisted={wishlistItems.some((item) => item.id === product.id)}
-                  onWishlistToggle={() => handleWishlistToggle(product)}
-                  onAddToCart={() => handleDirectAddToCart(product)}
-                  onBuyNow={() => handleBuyNow(product, 1)}
-                  onQuickView={() => setSelectedProduct(product)}
-                />
-              ))}
-            </div>
-          )}
+            {/* Grid Layout or Loading Spinner */}
+            {isProductsLoading ? (
+              <div className="py-16 text-center space-y-2">
+                <div className="w-8 h-8 border-3 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs font-medium text-brand-700">Loading products...</p>
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              /* Empty Grid Results */
+              <div className="text-center py-12 bg-brand-50/20 rounded-2xl border border-dashed border-brand-200 px-4">
+                <p className="text-sm font-serif italic text-gray-600">
+                  {products.length === 0
+                    ? 'No products available in the database yet.'
+                    : `No products found matching "${searchQuery}".`}
+                </p>
+                {products.length === 0 ? (
+                  <div className="mt-3 flex flex-col items-center justify-center gap-2">
+                    <a
+                      href="/admin.html"
+                      className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs uppercase tracking-widest px-4 py-2.5 rounded-full shadow cursor-pointer transition-all"
+                    >
+                      Open Admin Page
+                    </a>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setActiveCategory('All');
+                    }}
+                    className="mt-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs uppercase tracking-widest px-4 py-2.5 rounded-full shadow cursor-pointer"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
+            ) : (
+              /* Product cards grid - Strictly 2 products per row */
+              <div className="grid grid-cols-2 gap-2">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    isWishlisted={wishlistItems.some((item) => item.id === product.id)}
+                    onWishlistToggle={() => handleWishlistToggle(product)}
+                    onAddToCart={() => handleDirectAddToCart(product)}
+                    onBuyNow={() => handleBuyNow(product, 1)}
+                    onQuickView={() => setSelectedProduct(product)}
+                  />
+                ))}
+              </div>
+            )}
 
-        </div>
-      </main>
+          </div>
+        </main>
 
-      {/* Brand Features bar */}
-      <Features />
+        {/* Brand Features bar */}
+        <Features />
 
-      {/* Dynamic Siba Footer (Includes Maps and write to us) */}
-      <Footer onNavigate={handleNavigate} />
+        {/* Dynamic Siba Footer (Includes Maps and write to us) */}
+        <Footer onNavigate={handleNavigate} />
 
-      {/* Modals & Slide-over Drawers */}
-      
-      {/* Product Quick View Modal */}
-      <QuickViewModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onAddToCart={(qty, size, color) => {
-          if (selectedProduct) {
-            handleAddToCart(selectedProduct, qty, size, color);
-          }
-        }}
-        onBuyNow={(qty, size, color) => {
-          if (selectedProduct) {
-            handleBuyNow(selectedProduct, qty, size, color);
-          }
-        }}
-        onWishlistToggle={() => selectedProduct && handleWishlistToggle(selectedProduct)}
-        isWishlisted={selectedProduct ? wishlistItems.some((item) => item.id === selectedProduct.id) : false}
-      />
+        {/* Modals & Slide-over Drawers */}
+        
+        {/* Product Quick View Modal */}
+        <QuickViewModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={(qty, size, color) => {
+            if (selectedProduct) {
+              handleAddToCart(selectedProduct, qty, size, color);
+            }
+          }}
+          onBuyNow={(qty, size, color) => {
+            if (selectedProduct) {
+              handleBuyNow(selectedProduct, qty, size, color);
+            }
+          }}
+          onWishlistToggle={() => selectedProduct && handleWishlistToggle(selectedProduct)}
+          isWishlisted={selectedProduct ? wishlistItems.some((item) => item.id === selectedProduct.id) : false}
+        />
 
-      {/* Shopping Bag sliding drawer */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQty={handleUpdateCartQty}
-        onRemoveItem={handleRemoveCartItem}
-        onCheckout={handleCheckoutInitiate}
-      />
+        {/* Shopping Bag sliding drawer */}
+        <CartDrawer
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cartItems={cartItems}
+          onUpdateQty={handleUpdateCartQty}
+          onRemoveItem={handleRemoveCartItem}
+          onCheckout={handleCheckoutInitiate}
+        />
 
-      {/* Wishlist sliding drawer */}
-      <WishlistDrawer
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlistItems={wishlistItems}
-        onRemoveItem={handleRemoveWishlistItem}
-        onAddToCart={handleDirectAddToCart}
-      />
+        {/* Wishlist sliding drawer */}
+        <WishlistDrawer
+          isOpen={isWishlistOpen}
+          onClose={() => setIsWishlistOpen(false)}
+          wishlistItems={wishlistItems}
+          onRemoveItem={handleRemoveWishlistItem}
+          onAddToCart={handleDirectAddToCart}
+        />
 
-      {/* Checkout Form & Order Success Modal */}
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
-        cartItems={checkoutItems.length > 0 ? checkoutItems : cartItems}
-        discountAmount={checkoutDiscount}
-        promoApplied={checkoutPromoCode}
-        onOrderSuccess={handleOrderSuccess}
-      />
+        {/* Checkout Form & Order Success Modal */}
+        <CheckoutModal
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          cartItems={checkoutItems.length > 0 ? checkoutItems : cartItems}
+          discountAmount={checkoutDiscount}
+          promoApplied={checkoutPromoCode}
+          onOrderSuccess={handleOrderSuccess}
+        />
 
+      </div>
     </div>
   );
 }

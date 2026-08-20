@@ -43,8 +43,9 @@ export default function Navbar({
   const menuItems = [
     { name: 'Home', section: 'home' },
     { name: 'Shop', section: 'shop' },
-    { name: 'Clothing', section: 'clothing' },
-    { name: 'Accessories', section: 'accessories' },
+    { name: 'Dupatta', section: 'dupatta' },
+    { name: 'Hijab & Naqab', section: 'hijab-naqab' },
+    { name: 'Kids Wear', section: 'kids-wear' },
     { name: 'New Arrivals', section: 'new-arrivals' },
     { name: 'Sale', section: 'sale' },
     { name: 'About Us', section: 'about-us' },
@@ -63,9 +64,9 @@ export default function Navbar({
   return (
     <>
       {/* Top Banner */}
-      <div id="promo-banner" className="bg-brand-100 text-brand-800 text-[11px] sm:text-xs font-medium py-2 px-2 sm:px-4 text-center tracking-wider flex items-center justify-center gap-2 relative z-50">
-        <Sparkles className="w-3.5 h-3.5 animate-pulse text-brand-500 shrink-0" />
-        <span className="truncate sm:overflow-visible">FREE SHIPPING ON ORDERS OVER ₹999 | EASY RETURNS & EXCHANGES</span>
+      <div id="promo-banner" className="bg-brand-100 text-brand-900 text-[11px] sm:text-xs font-semibold py-2 px-2 sm:px-4 text-center tracking-wider flex items-center justify-center gap-2 relative z-50">
+        <Sparkles className="w-3.5 h-3.5 animate-pulse text-brand-600 shrink-0" />
+        <span className="truncate sm:overflow-visible">Dupatta, Hijab, Naqab, Kids Wear &amp; Daily Wear Clothes at Best Price - Siba Collection</span>
       </div>
 
       {/* Sticky Header */}
@@ -73,102 +74,57 @@ export default function Navbar({
         id="main-navbar"
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-md py-2.5 sm:py-3'
-            : 'bg-white py-3 sm:py-5'
+            ? 'bg-white/95 backdrop-blur-md shadow-sm py-2.5'
+            : 'bg-white py-3'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4">
+        <div className="w-full px-3.5 sm:px-4">
+          <div className="flex items-center justify-between gap-2">
             {/* Mobile Menu Button */}
             <button
               id="mobile-menu-btn"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-gray-600 hover:text-brand-500 transition-colors"
+              className="p-1.5 text-gray-700 hover:text-brand-600 transition-colors"
               aria-label="Open menu"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             </button>
 
             {/* Premium Logo "Siba Collection" */}
             <div
               id="brand-logo-container"
               onClick={() => onNavigate('home')}
-              className="flex items-center gap-2.5 cursor-pointer group"
+              className="flex items-center gap-2 cursor-pointer group"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="w-10 h-10 flex items-center justify-center"
+                className="w-8 h-8 flex items-center justify-center"
               >
-                <SibaLogo size="40" className="shadow-lg rounded-full" />
+                <SibaLogo size="32" className="shadow-md rounded-full" />
               </motion.div>
               <div className="flex flex-col">
-                <span className="font-serif text-lg sm:text-xl font-bold tracking-widest text-gray-900 group-hover:text-brand-500 transition-colors uppercase">
+                <span className="font-serif text-base font-bold tracking-wider text-gray-900 group-hover:text-brand-600 transition-colors uppercase">
                   Siba Collection
                 </span>
-                <span className="text-[10px] tracking-[0.25em] font-medium text-brand-500 uppercase -mt-0.5">
+                <span className="text-[8px] tracking-[0.2em] font-bold text-brand-600 uppercase -mt-0.5">
                   Premium Fashion
                 </span>
               </div>
             </div>
 
-            {/* Desktop Navigation Links */}
-            <nav id="desktop-nav" className="hidden lg:flex items-center gap-7">
-              {menuItems.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => onNavigate(item.section)}
-                  className={`relative py-1 text-sm font-medium tracking-wide transition-colors uppercase ${
-                    activeSection === item.section
-                      ? 'text-brand-600 font-semibold'
-                      : 'text-gray-600 hover:text-brand-500'
-                  }`}
-                >
-                  {item.name}
-                  {activeSection === item.section && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-500"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              ))}
-            </nav>
-
             {/* Action Buttons */}
-            <div id="navbar-actions" className="flex items-center gap-2 sm:gap-4">
+            <div id="navbar-actions" className="flex items-center gap-1.5">
               {/* Search Toggle */}
-              <div className="relative">
-                <AnimatePresence>
-                  {isSearchOpen && (
-                    <motion.div
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: 180, opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      className="absolute right-full top-1/2 -translate-y-1/2 mr-2 hidden sm:block"
-                    >
-                      <input
-                        type="text"
-                        placeholder="Search collection..."
-                        value={searchQuery}
-                        onChange={(e) => onSearchChange(e.target.value)}
-                        className="w-full text-xs py-1.5 px-3 rounded-full border border-brand-200 bg-brand-50 focus:outline-none focus:border-brand-500 text-gray-800 font-sans"
-                        autoFocus
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <button
-                  id="search-toggle-btn"
-                  onClick={() => setIsSearchOpen(!isSearchOpen)}
-                  className="p-2 text-gray-600 hover:text-brand-500 transition-colors relative"
-                  aria-label="Search"
-                >
-                  <Search className="w-5 h-5" />
-                </button>
-              </div>
+              <button
+                id="search-toggle-btn"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="p-1.5 text-gray-700 hover:text-brand-600 transition-colors relative"
+                aria-label="Search"
+              >
+                <Search className="w-4 h-4" />
+              </button>
 
               {/* Login/User Button */}
               <button
@@ -183,29 +139,24 @@ export default function Navbar({
                     setIsLoginOpen(true);
                   }
                 }}
-                className={`p-2 transition-colors flex items-center gap-1 text-gray-600 hover:text-brand-500 ${
-                  isLoggedIn ? 'text-brand-500' : ''
+                className={`p-1.5 transition-colors flex items-center gap-1 text-gray-700 hover:text-brand-600 ${
+                  isLoggedIn ? 'text-brand-600' : ''
                 }`}
                 aria-label="User Account"
               >
-                <User className="w-5 h-5" />
-                {isLoggedIn && (
-                  <span className="hidden md:inline text-xs font-semibold max-w-[80px] truncate text-brand-600">
-                    Hi, Siba!
-                  </span>
-                )}
+                <User className="w-4 h-4" />
               </button>
 
               {/* Wishlist Button */}
               <button
                 id="wishlist-drawer-btn"
                 onClick={onOpenWishlist}
-                className="p-2 text-gray-600 hover:text-brand-500 transition-colors relative"
+                className="p-1.5 text-gray-700 hover:text-brand-600 transition-colors relative"
                 aria-label="Wishlist"
               >
-                <Heart className="w-5 h-5" />
+                <Heart className="w-4 h-4" />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-brand-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white animate-pulse">
+                  <span className="absolute -top-0.5 -right-0.5 bg-brand-500 text-white text-[8px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center border border-white">
                     {wishlistCount}
                   </span>
                 )}
@@ -215,32 +166,39 @@ export default function Navbar({
               <button
                 id="cart-drawer-btn"
                 onClick={onOpenCart}
-                className="p-2 text-gray-900 hover:text-brand-500 transition-colors relative"
+                className="p-1.5 text-gray-900 hover:text-brand-600 transition-colors relative"
                 aria-label="Cart"
               >
-                <ShoppingBag className="w-5 h-5" />
+                <ShoppingBag className="w-4 h-4" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-brand-600 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white">
+                  <span className="absolute -top-0.5 -right-0.5 bg-brand-600 text-white text-[8px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center border border-white">
                     {cartCount}
                   </span>
                 )}
               </button>
             </div>
           </div>
-        </div>
 
-        {/* Mobile Search Input (Visible always on mobile) */}
-        <div className="block sm:hidden px-2 pt-2">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search Siba Collection..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full text-xs py-2 pl-9 pr-4 rounded-full border border-brand-100 bg-brand-50/50 focus:outline-none focus:border-brand-300 text-gray-800"
-            />
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
-          </div>
+          {/* Search Bar dropdown when open */}
+          <AnimatePresence>
+            {isSearchOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden pt-2 pb-1"
+              >
+                <input
+                  type="text"
+                  placeholder="Search Dupatta, Hijab, Kids Wear..."
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="w-full text-xs py-2 px-3.5 rounded-full border border-brand-200 bg-brand-50/50 focus:outline-none focus:border-brand-500 text-gray-800 font-sans shadow-xs"
+                  autoFocus
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </header>
 

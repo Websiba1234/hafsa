@@ -1,27 +1,17 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Read env variables (supporting both VITE_ prefix and standard process.env)
-const metaEnv = (import.meta as any).env || {};
-const supabaseUrl =
-  (metaEnv.VITE_SUPABASE_URL as string) ||
-  (typeof process !== 'undefined' ? process.env.SUPABASE_URL : '') ||
-  '';
+// Supabase Configuration with robust fallbacks
+export const SUPABASE_URL =
+  ((import.meta as any).env?.VITE_SUPABASE_URL as string) ||
+  (typeof process !== 'undefined' ? (process.env as any)?.SUPABASE_URL : '') ||
+  'https://vkguvrnymuoppisafttw.supabase.co';
 
-const supabaseAnonKey =
-  (metaEnv.VITE_SUPABASE_ANON_KEY as string) ||
-  (typeof process !== 'undefined' ? process.env.SUPABASE_ANON_KEY : '') ||
-  '';
+export const SUPABASE_ANON_KEY =
+  ((import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string) ||
+  (typeof process !== 'undefined' ? (process.env as any)?.SUPABASE_ANON_KEY : '') ||
+  'sb_publishable_a-FMI4wwGqFB5r4ZUgTT-A_dDRM6NI-';
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const isSupabaseConfigured: boolean = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
-if (!isSupabaseConfigured) {
-  console.warn(
-    'Supabase URL or Anon Key is missing. Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment.'
-  );
-}
-
-// Create Supabase client (using empty strings gracefully if not configured yet to prevent initial runtime crash)
-export const supabase: SupabaseClient = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder'
-);
+// Create Supabase client instance
+export const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

@@ -217,36 +217,35 @@ export default function ProductCard({
             </div>
           </div>
 
-          {/* Dual Action Buttons: Add to Bag (Secondary) & Buy Now (Primary) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-0.5">
+          {/* Dual Action Buttons: Add to Cart (Icon/Quick) & Buy Now (Full) */}
+          <div className="flex items-center gap-1.5 pt-1 w-full">
             <button
               onClick={handleAddToCartClick}
               disabled={addingToCart || isOutOfStock}
-              className={`w-full flex items-center justify-center gap-1 text-[11px] sm:text-[10px] font-bold uppercase tracking-wider py-2 px-2 rounded-xl border transition-all whitespace-nowrap ${
+              className={`h-8 px-2.5 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
                 isOutOfStock
                   ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
                   : addingToCart
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-700 cursor-pointer'
-                  : 'bg-white hover:bg-brand-50/80 border-brand-200 text-brand-700 hover:border-brand-300 cursor-pointer'
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                  : 'bg-brand-50/50 hover:bg-brand-100/70 border-brand-200 text-brand-700'
               }`}
+              title="Add to Cart"
+              aria-label="Add to cart"
             >
-              <ShoppingBag className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
-              <span className="whitespace-nowrap">
-                {isOutOfStock ? 'Sold Out' : addingToCart ? 'Added!' : 'Add to Bag'}
-              </span>
+              <ShoppingBag className="w-3.5 h-3.5" />
             </button>
 
             <button
               onClick={handleBuyNowClick}
               disabled={isOutOfStock}
-              className={`w-full flex items-center justify-center gap-1 text-[11px] sm:text-[10px] font-bold uppercase tracking-wider py-2 px-2 rounded-xl shadow-sm transition-all whitespace-nowrap ${
+              className={`flex-1 h-8 flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 rounded-xl shadow-xs transition-all text-center ${
                 isOutOfStock
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-brand-600 hover:bg-brand-700 text-white cursor-pointer active:scale-95'
               }`}
             >
-              <Zap className="w-3.5 h-3.5 sm:w-3 sm:h-3 fill-current shrink-0" />
-              <span className="whitespace-nowrap">{isOutOfStock ? 'Out of Stock' : 'Buy Now'}</span>
+              <Zap className="w-3 h-3 fill-current" />
+              <span className="truncate">{isOutOfStock ? 'Sold Out' : 'Buy Now'}</span>
             </button>
           </div>
 
