@@ -257,12 +257,12 @@ export default function Navbar({
                 ))}
               </div>
 
-              <div className="border-t border-gray-100 pt-6 mt-6 space-y-4">
-                <div className="text-xs text-gray-500">
-                  <p className="font-semibold text-gray-700">Need help?</p>
-                  <p className="mt-1 font-medium text-gray-700">Email: support@sibacollection.com</p>
-                  <p>Call: +91 8210941262</p>
-                  <p>Juran Chapra, Muzaffarpur</p>
+              <div className="border-t border-gray-100 pt-5 mt-4 space-y-3">
+                <div className="text-xs text-gray-500 space-y-1">
+                  <p className="font-bold text-gray-800">Siba Collection Store</p>
+                  <p className="text-[11px] text-gray-600 leading-snug">Road No. 5, Mahesh Babu Chowk, Muzaffarpur, Bihar - 842002</p>
+                  <p className="text-[11px] font-medium text-brand-600">Call/WA: +91 8210941262</p>
+                  <p className="text-[10px] text-gray-500">Email: support@sibacollection.com</p>
                 </div>
               </div>
             </motion.div>

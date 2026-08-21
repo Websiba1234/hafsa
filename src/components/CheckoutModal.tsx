@@ -24,10 +24,10 @@ export default function CheckoutModal({
     name: '',
     email: '',
     phone: '',
-    address: 'Juran Chapra, Brahampura',
+    address: 'Road No. 5, Mahesh Babu Chowk',
     city: 'Muzaffarpur',
     state: 'Bihar',
-    zip: '842001',
+    zip: '842002',
     country: 'India',
     paymentMethod: 'cod'
   });
@@ -88,7 +88,7 @@ export default function CheckoutModal({
         name: item.product?.name || 'Item',
         qty: item.quantity || 1,
         price: item.product?.price || 0,
-        sku: item.product?.sku || item.product?.id || 'SKU-DEFAULT'
+        sku: item.product?.productId || item.product?.id || 'SKU-DEFAULT'
       })),
       package: {
         weight: totalWeight,

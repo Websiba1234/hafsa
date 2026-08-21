@@ -151,13 +151,19 @@ export default function CartDrawer({
                     className="py-4 flex gap-4"
                   >
                     {/* Thumb frame */}
-                    <div className="w-20 h-24 rounded-lg overflow-hidden border border-gray-100 bg-gray-50 flex-none relative">
-                      <img
-                        src={item.product.image || undefined}
-                        alt={item.product.name}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-20 h-24 rounded-lg overflow-hidden border border-gray-100 bg-neutral-900 flex-none relative flex items-center justify-center">
+                      {item.product.hasValidImage && item.product.image ? (
+                        <img
+                          src={item.product.image}
+                          alt={item.product.name}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-center p-1 text-[8px] font-bold text-brand-300">
+                          SIBA
+                        </div>
+                      )}
                     </div>
 
                     {/* Details and quantity adjustments */}
@@ -165,7 +171,7 @@ export default function CartDrawer({
                       <div>
                         {/* Title */}
                         <h4 className="font-serif text-sm font-bold text-gray-900 leading-tight line-clamp-1">
-                          {item.product.name}
+                          {item.product.name || item.product.title}
                         </h4>
 
                         {/* Selected Variants */}
@@ -176,12 +182,8 @@ export default function CartDrawer({
                             </span>
                           )}
                           {item.selectedColor && (
-                            <span className="flex items-center gap-1 bg-gray-100 px-1.5 py-0.5 rounded">
-                              Color:{' '}
-                              <span
-                                className="w-2.5 h-2.5 rounded-full inline-block border border-gray-200"
-                                style={{ backgroundColor: item.selectedColor.hex }}
-                              />
+                            <span className="bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded font-medium">
+                              Color: {typeof item.selectedColor === 'object' ? (item.selectedColor as any).name : item.selectedColor}
                             </span>
                           )}
                         </div>

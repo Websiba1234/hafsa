@@ -18,7 +18,7 @@ export default function Offers({ onPromoClick }: OffersProps) {
       textColor: 'text-brand-900',
       badgeColor: 'bg-brand-200/60 text-brand-800',
       image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80',
-      categoryFilter: 'Dupatta'
+      categoryFilter: 'Dupatta 99'
     },
     {
       id: 'promo-2',

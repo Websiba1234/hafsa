@@ -1,56 +1,68 @@
 export interface Product {
   id: string;
+  productId?: string;
   name: string;
-  category: string;
+  title?: string;
   price: number;
   originalPrice: number;
   original_price?: number;
+  discountBadge?: string;
+  discountPercent?: number;
   discount_percent?: number;
-  rating: number;
-  reviewCount?: number;
   image: string;
-  images?: string[];
+  images: string[];
   hoverImage?: string;
-  description?: string;
-  details?: string[];
+  hasValidImage?: boolean;
+  category: string;
+  color?: string;
+  colors?: { name: string; hex: string }[];
+  sizes?: string[];
   fabric?: string;
   pattern?: string;
-  color?: string;
-  sizes?: string[];
-  colors?: { name: string; hex: string }[];
+  details?: string[];
+  description?: string;
+  stockText?: string;
+  stock: number;
+  isAvailable: boolean;
+  rating?: number;
+  reviewCount?: number;
   isNew?: boolean;
   is_new?: boolean;
   isTrending?: boolean;
   is_trending?: boolean;
   isBestSeller?: boolean;
-  discountBadge?: string;
-  stock?: number;
+  is_best_seller?: boolean;
   sku?: string;
-  isAvailable?: boolean;
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
   selectedSize?: string;
-  selectedColor?: { name: string; hex: string };
+  selectedColor?: string | { name: string; hex: string };
 }
 
+// EXACT 14 CATEGORIES - IN THIS EXACT ORDER
 export const CATEGORIES = [
-  'Dupatta',
+  'All',
   'Hijab',
-  'Naqab',
-  'Dastarkhan',
-  'Trouser',
-  'Nicker / Underwear',
-  'Sando / Ganji',
-  'Stoll / Shawl',
-  'Rumal',
-  'Nighty',
+  'Niqab',
+  'Dupatta 99',
+  'Dupatta Cotton',
+  'Dupatta Chiffon',
+  'Dupatta Banarasi & Fancy',
+  'Stoll Simple',
+  'Stoll Cotton',
+  'Stoll Luxury / Shawl',
   'Kurti',
-  'Bache Ka Kapra'
+  'Bache Ka Kapra',
+  'Undercap / Undergarments / Innerwear',
+  'Dastarkhan'
 ] as const;
 
-// No hardcoded fake data - the website is dynamic from Supabase
-export const PRODUCTS: Product[] = [];
+export type CategoryType = typeof CATEGORIES[number];
 
+export const MAIN_CATEGORIES = CATEGORIES;
+export const ALL_DEFAULT_CATEGORIES = CATEGORIES;
+
+export const PRODUCTS: Product[] = [];

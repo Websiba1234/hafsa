@@ -1,6 +1,8 @@
 {
   "name": "Siba Collection",
-  "description": "Dupatta, Hijab, Naqab, Kids Wear & Daily Wear Clothes at Best Price - Siba Collection",
+  "description": "Siba Collection, Road No. 5, Mahesh Babu Chowk, Muzaffarpur, Bihar 842002. Biggest Dupatta Shop - Dupatta 99, Cotton Dupatta, Chiffon, Banarasi, Stoll Cotton, Luxury Shawl, Hijab, Niqab, Kurti, Bache Ka Kapra, Undercap Undergarments, Dastarkhan. All India Delivery, COD Available.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
