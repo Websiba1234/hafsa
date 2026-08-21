@@ -216,11 +216,11 @@ export default function Footer({ onNavigate }: FooterProps) {
                 </a>
 
                 <a
-                  href="mailto:support@sibacollection.com"
+                  href="mailto:8210abdu@gmail.com"
                   className="flex-1 flex items-center gap-1.5 bg-neutral-900 border border-gray-800 p-2 rounded-lg text-white hover:border-brand-500 text-[10px] truncate"
                 >
                   <Mail className="w-3.5 h-3.5 text-brand-400 shrink-0" />
-                  <span className="truncate">Email Support</span>
+                  <span className="truncate">8210abdu@gmail.com</span>
                 </a>
               </div>
             </div>

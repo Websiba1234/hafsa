@@ -262,7 +262,7 @@ export default function Navbar({
                   <p className="font-bold text-gray-800">Siba Collection Store</p>
                   <p className="text-[11px] text-gray-600 leading-snug">Road No. 5, Mahesh Babu Chowk, Muzaffarpur, Bihar - 842002</p>
                   <p className="text-[11px] font-medium text-brand-600">Call/WA: +91 8210941262</p>
-                  <p className="text-[10px] text-gray-500">Email: support@sibacollection.com</p>
+                  <p className="text-[10px] text-gray-500">Email: 8210abdu@gmail.com</p>
                 </div>
               </div>
             </motion.div>
